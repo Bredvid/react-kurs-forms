@@ -1,23 +1,6 @@
 import { useState, ChangeEvent } from "react";
 
-const initialValues = {
-  name: "",
-  email: "",
-  phoneNumber: "",
-  birthDate: new Date().toISOString().split("T")[0],
-  picture: "",
-  sex: "",
-  acceptTerms: false,
-};
-
 const Form = () => {
-  const [values, setValues] = useState(initialValues);
-  const setFieldValue = (
-    key: keyof typeof values,
-    e: ChangeEvent<HTMLInputElement>
-  ) => {
-    setValues({ ...values, [key]: e.target.value });
-  };
   return (
     <div className="container">
       <h1>Form</h1>
@@ -25,7 +8,7 @@ const Form = () => {
         method="post"
         onSubmit={(e) => {
           e.preventDefault();
-          console.log("submit", values);
+          console.log("submitting...")
         }}
       >
         <div className="d-flex flex-column">
@@ -34,18 +17,14 @@ const Form = () => {
             <input
               type="text"
               name="name"
-              value={values.name}
-              onChange={(e) => setFieldValue("name", e)}
             />
           </label>
-
+          
           <label className="d-flex flex-column w-50">
             <span className="mr-2">E-post</span>
             <input
               type="email"
               name="email"
-              value={values.email}
-              onChange={(e) => setFieldValue("email", e)}
             />
           </label>
 
@@ -54,8 +33,6 @@ const Form = () => {
             <input
               type="number"
               name="phoneNumber"
-              value={values.phoneNumber}
-              onChange={(e) => setFieldValue("phoneNumber", e)}
             />
           </label>
           <label className="d-flex flex-column w-50">
@@ -63,8 +40,6 @@ const Form = () => {
             <input
               type="date"
               name="birthDate"
-              value={values.birthDate}
-              onChange={(e) => setFieldValue("birthDate", e)}
             />
           </label>
 
@@ -73,8 +48,6 @@ const Form = () => {
             <input
               type="file"
               name="picture"
-              value={values.picture}
-              onChange={(e) => setFieldValue("picture", e)}
             />
           </label>
 
@@ -83,8 +56,6 @@ const Form = () => {
               className="mr-2"
               type="radio"
               name="sex"
-              value="kvinne"
-              onChange={(e) => setFieldValue("sex", e)}
             />
             Kvinne
           </label>
@@ -94,7 +65,6 @@ const Form = () => {
               type="radio"
               name="sex"
               value="mann"
-              onChange={(e) => setFieldValue("sex", e)}
             />
             Mann
           </label>
@@ -104,7 +74,6 @@ const Form = () => {
               type="radio"
               name="sex"
               value="other"
-              onChange={(e) => setFieldValue("sex", e)}
             />
             Annet
           </label>
@@ -115,8 +84,6 @@ const Form = () => {
               type="checkbox"
               name="sex"
               value="acceptTerms"
-              onChange={(e) => setFieldValue("acceptTerms", e)}
-              checked={values.acceptTerms}
             />
             Godta vilkår
           </label>
