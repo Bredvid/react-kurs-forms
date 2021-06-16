@@ -1,6 +1,17 @@
 import { useState, ChangeEvent } from "react";
+import { useRouter } from "next/router";
 
-const initialValues = {
+export interface FormData {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  birthDate: string;
+  picture: string;
+  sex: string;
+  acceptTerms: boolean;
+}
+
+const initialValues : FormData  = {
   name: "",
   email: "",
   phoneNumber: "",
@@ -11,30 +22,53 @@ const initialValues = {
 };
 
 const Form = () => {
+
   const [values, setValues] = useState(initialValues);
+  const [fetchStatus, setFetchStatus] = useState({isError: false, isFetching: false})
+  const [finishedWithForm, setFinished] = useState(false)
+  const router = useRouter()
+
   const setFieldValue = (
     key: keyof typeof values,
     e: ChangeEvent<HTMLInputElement>
   ) => {
     setValues({ ...values, [key]: e.target.value });
   };
+
   const resetForm = () => setValues(initialValues);
+
   const postForm = async () => {
-    await fetch("api/form", {
+
+    setFetchStatus({isError: false, isFetching: true})
+
+    fetch("api/form", {
       method: "POST",
       body: JSON.stringify(values),
-    });
-  };
+    })
+      .then( res =>  { 
+        if(res.ok) {
+          setFetchStatus({isError: false, isFetching: false})
+          resetForm()
+          //setFinished(true)
+          router.push("/forms")
+        } else {
+          setFetchStatus({isError: true, isFetching: false})
+        }
+      })
+      .catch((e) =>  {
+        setFetchStatus({isError: true, isFetching: false})
+      })
+  }
 
   return (
+    
     <div className="container">
       <h1>Form</h1>
-      <form
+      {!finishedWithForm && <form
         method="post"
-        onSubmit={async (e) => {
+        onSubmit={ (e) => {
           e.preventDefault();
-          await postForm();
-          resetForm();
+          postForm();
         }}
       >
         <div className="d-flex flex-column">
@@ -131,8 +165,14 @@ const Form = () => {
           </label>
         </div>
 
-        <button className="btn btn-primary btn-sm">Submit</button>
-      </form>
+        <button className="btn btn-primary btn-sm" disabled={fetchStatus.isFetching}>Submit</button>
+      {fetchStatus.isError && <p style={{color:"red"}}>Ei, det gikk ikke som det skulle, prøv igjen!</p>}
+      </form> }
+      {finishedWithForm ?
+       <p style={{color:"green"}}>Supert, alt gikk bra</p>
+      : <p>Ikke ferdig</p>
+      }
+      
     </div>
   );
 };
